@@ -49,6 +49,9 @@ gameState.load.prototype = {
     this.game.load.image('average-cloud', 'img/moyen-nuages.png');
     this.game.load.image('big-cloud', 'img/gros-nuages.png');
 
+    // trap
+    this.game.load.image('trap1', 'img/trap1.png');
+    this.game.load.image('trap2', 'img/trap2.png');
     // bus
     this.game.load.image('bus', 'img/bus.png');
 
@@ -85,6 +88,12 @@ gameState.main.prototype = {
     // BUS INIT
     this.bus = this.game.add.sprite(gameWidth-600, gameHeight-270, 'bus');
 
+    // TRAP INIT
+    this.trap1 = this.game.add.sprite(gameWidth-400, gameHeight-250, 'trap1');
+    this.trap2 = this.game.add.sprite(gameWidth-200, gameHeight-250, 'trap2');
+    this.trap1.anchor.setTo(0, 1);
+    this.trap2.anchor.setTo(1, 0);
+
     // CLOUD INIT
     this.bigCloud = this.game.add.tileSprite(0, 0, gameWidth, 353, 'big-cloud');
     this.averageCloud = this.game.add.tileSprite(0, 0, gameWidth, 184, 'average-cloud');
@@ -94,6 +103,13 @@ gameState.main.prototype = {
     this.roue2 = this.game.add.sprite(gameWidth-150, gameHeight-55, 'roue2');
     this.roue1.anchor.setTo(0.5, 0.5);
     this.roue2.anchor.setTo(0.5, 0.5);
+
+
+    // CAR INIT
+    this.car1 = this.game.add.sprite(0, gameHeight-115, 'car1');
+    this.car1.scale.setTo(0.5);
+    this.car2 = this.game.add.sprite(600, gameHeight-110, 'car2');
+    this.car2.scale.setTo(0.5);
 
     // GROUND INIT
     this.ground = this.game.add.tileSprite(0, gameHeight-15, gameWidth, 30, 'ground');
@@ -106,6 +122,15 @@ gameState.main.prototype = {
     this.pompe1 = this.game.add.sprite(400,gameHeight-80, 'pompe' );
     this.pompe2 = this.game.add.sprite(800,gameHeight-80, 'pompe' );
 
+    // var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+    //
+    // var text = game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
+    //
+    // text.anchor.set(0.5);
+
+    console.log(this.trap1.angle);
+    let that = this;
+    game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
 	},
 
 	update: function() {
@@ -120,29 +145,74 @@ gameState.main.prototype = {
     this.pompe1.x -= VELOCITY_GROUND;
     this.pompe2.x -= VELOCITY_GROUND;
 
-    this.update_bin_position( this.bin1 );
-    this.update_bin_position( this.bin2 );
-    this.update_bin_position( this.pompe1 );
-    this.update_bin_position( this.pompe2 );
-
+    this.update_element_position( this.bin1 );
+    this.update_element_position( this.bin2 );
+    this.update_element_position( this.pompe1 );
+    this.update_element_position( this.pompe2 );
 
     this.roue1.angle += VELOCITY_GROUND;
     this.roue2.angle += VELOCITY_GROUND;
+
+    this.car_control( this.car1, this.car2 );
+
 	},
 
-  get_random_int_inclusive :function (min, max) {
+  open_trap: function(){
+    game.add.tween(this.trap1).to( {angle:-100}, 2000, Phaser.Easing.Exponential.Out, true);
+    game.add.tween(this.trap2).to( {angle:100}, 2000, Phaser.Easing.Exponential.Out, true);
+  },
+
+  get_random_int_inclusive :function ( min, max ) {
+
     min = Math.ceil(min);
     max = Math.floor(max);
     return Math.floor(Math.random() * (max - min +1)) + min;
+
   },
 
-  update_bin_position: function( bin ){
+  update_element_position: function( element ){
 
-    if( bin.x <= ( 0 - bin.width )){
+    if( element.x <= ( 0 - element.width )){
 
-        bin.x += this.game.width + bin.width + this.get_random_int_inclusive(100, 1000);
+        element.x += this.game.width + element.width + this.get_random_int_inclusive(100, 10000);
 
     }
+
+  },
+
+  car_control: function( car1, car2 ){
+
+
+
+      if ( car1.x >= ( car2.x - car2.width - 20 )){
+
+          car1.x += 0;
+
+      }else{
+
+          car1.x += 5;
+
+      }
+
+  },
+
+  progressive_scale: function( object ){
+
+    let interval = setInterval(function () {
+
+      let carScale = 0.5;
+      if( carScale <= 0.20){
+
+          clearInterval( interval );
+
+      }else{
+        console.log('reduction');
+          object.scale.setTo(carScale - 0.02);
+      }
+
+
+
+    }, 500);
 
   }
 
