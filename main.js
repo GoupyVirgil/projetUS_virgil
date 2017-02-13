@@ -61,6 +61,8 @@ gameState.load.prototype = {
     // roue2
     this.game.load.image('roue2', 'img/roue2.png');
 
+    this.game.load.image('player', 'img/p3_spritesheet.png');
+
 	},
 
 	create: function() {
@@ -128,9 +130,23 @@ gameState.main.prototype = {
     //
     // text.anchor.set(0.5);
 
-    console.log(this.trap1.angle);
     let that = this;
     game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
+
+    this.player = game.add.sprite(32, game.world.height - 150, 'player');
+    this.game.physics.arcade.enable(this.player);
+
+
+        this.player.body.bounce.y = 0.2;
+        this.player.body.gravity.y = 300;
+        this.player.body.collideWorldBounds = true;
+
+        //  Our two animations, walking left and right.
+        this.player.animations.add('left', [0, 1, 2, 3], 10, true);
+        this.player.animations.add('right', [5, 6, 7, 8], 10, true);
+
+        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 	},
 
 	update: function() {
@@ -154,6 +170,18 @@ gameState.main.prototype = {
     this.roue2.angle += VELOCITY_GROUND;
 
     this.car_control( this.car1, this.car2 );
+
+
+    if (this.spaceKey.isDown)
+    {
+        this.player.body.velocity.y = -400;
+        this.player.animations.play('left');
+    }
+
+    if (this.player.body.touching.down)
+    {
+        this.player.body.velocity.y = -1000;
+    }
 
 	},
 
