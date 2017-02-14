@@ -124,8 +124,20 @@ gameState.main.prototype = {
     this.pompe1 = this.game.add.sprite(400,gameHeight-80, 'pompe' );
     this.pompe2 = this.game.add.sprite(800,gameHeight-80, 'pompe' );
 
-    this.player = this.game.add.sprite(150, game.world.height -360, 'player', 1);
-    this.game.physics.arcade.enable(this.player);
+    this.player = this.game.add.sprite(150, game.world.height -160, 'player', 1);
+
+    this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    this.game.physics.arcade.gravity.y = 500;
+    this.game.physics.enable([ this.player, this.ground ], Phaser.Physics.ARCADE);
+
+    this.player.body.collideWorldBounds = true;
+    this.player.body.bounce.set(1);
+    this.player.body.allowGravity = true;
+
+    this.ground.body.collideWorldBounds = true;
+    this.ground.body.immovable = true;
+    this.ground.body.allowGravity = true;
+
 
     // var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
     //
@@ -136,17 +148,13 @@ gameState.main.prototype = {
     let that = this;
     game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
 
+    this.player.body.bounce.y = 0;
+    this.player.body.collideWorldBounds = true;
 
+    //  Our two animations, walking left and right.
+    this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
 
-
-        this.player.body.bounce.y = 0.2;
-        this.player.body.gravity.y = 1000;
-        this.player.body.collideWorldBounds = true;
-
-        //  Our two animations, walking left and right.
-        this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-
-        this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+    this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 	},
 
@@ -172,18 +180,22 @@ gameState.main.prototype = {
 
     this.car_control( this.car1, this.car2 );
 
-        this.player.animations.play('run');
-    if (this.spaceKey.isDown)
-    {
-        this.player.body.velocity.y = -400;
-        // this.player.animations.play('up');
-    }
+    this.player.animations.play('run');
 
-    if (this.player.body.touching.down)
-    {
-        this.player.body.velocity.y = -1000;
-    }
 
+
+    // if (this.player.body.touching.down)
+    // {
+    //     this.player.body.velocity.y = 0;
+    // }
+
+    this.game.physics.arcade.collide(this.player,this.ground);
+
+        if (this.spaceKey.isDown)
+        {
+            this.player.body.velocity.y = 200;
+            // this.player.animations.play('up');
+        }
 	},
 
   open_trap: function(){
