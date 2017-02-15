@@ -63,6 +63,7 @@ gameState.load.prototype = {
 
     this.game.load.spritesheet('player', 'img/scottpilgrim_multiple.png', 108, 120);
 
+    this.game.load.image('popup', 'img/popup.png');
 	},
 
 	create: function() {
@@ -156,6 +157,9 @@ gameState.main.prototype = {
 
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+    this.popup = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'popup' );
+    this.popup.anchor.set(0.5);
+
 	},
 
 	update: function() {
@@ -183,7 +187,7 @@ gameState.main.prototype = {
     this.player.animations.play('run');
 
 
-
+    this.game.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true)
     // if (this.player.body.touching.down)
     // {
     //     this.player.body.velocity.y = 0;
@@ -263,3 +267,12 @@ game.state.add('load', gameState.load);
 game.state.add('main', gameState.main);
 
 game.state.start('load');
+
+setTimeout(createForm,4000);
+createForm();
+
+function createForm(){
+
+    $('canvas').append($('<div><h1>totototot</h1></div>').css({position:'absolute', left: 500, top:100}))
+
+}
