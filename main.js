@@ -61,7 +61,9 @@ gameState.load.prototype = {
     // roue2
     this.game.load.image('roue2', 'img/roue2.png');
 
-    this.game.load.spritesheet('player', 'img/scottpilgrim_multiple.png', 108, 120);
+    this.game.load.spritesheet('player', 'img/sprint.png', 250, 280);
+
+    this.game.load.image('box', 'img/box.png');
 
     this.game.load.image('popup', 'img/popup.png');
 	},
@@ -125,19 +127,41 @@ gameState.main.prototype = {
     this.pompe1 = this.game.add.sprite(400,gameHeight-80, 'pompe' );
     this.pompe2 = this.game.add.sprite(800,gameHeight-80, 'pompe' );
 
-    this.player = this.game.add.sprite(150, game.world.height -160, 'player', 1);
 
+
+
+    this.player = this.game.add.sprite(200, game.world.height -160, 'player', 1);
+    this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box');
+    // PHYSICS ARCADE
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.physics.arcade.gravity.y = 500;
-    this.game.physics.enable([ this.player, this.ground ], Phaser.Physics.ARCADE);
+    this.game.physics.arcade.gravity.y = 1500;
+    this.game.physics.enable([ this.player, this.box, this.ground ], Phaser.Physics.ARCADE);
+
+
+    // player
 
     this.player.body.collideWorldBounds = true;
-    this.player.body.bounce.set(1);
     this.player.body.allowGravity = true;
+    this.player.body.bounce.y = 0;
+    this.player.scale.setTo(0.5);
+    this.player.body.collideWorldBounds = true;
 
+    this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
+    this.player.animations.add('jump', [8, 9, 10,11],8, true);
+
+    // box
+    this.box.scale.setTo(0.3);
+
+    // ground
     this.ground.body.collideWorldBounds = true;
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = true;
+
+    let that = this;
+    this.game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
+
+    this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
+
 
 
     // var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
@@ -146,19 +170,11 @@ gameState.main.prototype = {
     //
     // text.anchor.set(0.5);
 
-    let that = this;
-    game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
 
-    this.player.body.bounce.y = 0;
-    this.player.body.collideWorldBounds = true;
 
-    //  Our two animations, walking left and right.
-    this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-
-    this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
-
-    this.popup = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'popup' );
-    this.popup.anchor.set(0.5);
+    // POPUP
+    // this.popup = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'popup' );
+    // this.popup.anchor.set(0.5);
 
 	},
 
@@ -184,22 +200,32 @@ gameState.main.prototype = {
 
     this.car_control( this.car1, this.car2 );
 
-    this.player.animations.play('run');
+    // this.player.animations.play('run');
 
 
-    this.game.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true)
-    // if (this.player.body.touching.down)
-    // {
-    //     this.player.body.velocity.y = 0;
-    // }
+    this.box.x -= VELOCITY_GROUND;
+    //POPUP
+    // this.game.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true)
 
+    this.game.physics.arcade.collide(this.player,this.box);
     this.game.physics.arcade.collide(this.player,this.ground);
+    this.game.physics.arcade.collide(this.box, this.ground);
 
-        if (this.spaceKey.isDown)
-        {
-            this.player.body.velocity.y = 200;
-            // this.player.animations.play('up');
-        }
+    this.game.physics.arcade.overlap(this.player, this.box, function(){;console.log('BOOOOOOOOOOOOOOOOOOM')}, null, this);
+
+    if (this.spaceKey.isDown && this.player.body.touching.down){
+
+
+        this.player.body.velocity.y = -500;
+
+    }
+    else if(!this.player.body.touching.down){
+        this.player.animations.play('jump');
+    }else{
+
+      this.player.animations.play('run');
+
+    }
 	},
 
   open_trap: function(){
@@ -259,6 +285,10 @@ gameState.main.prototype = {
 
     }, 500);
 
+  },
+
+  render: function(){
+    this.game.debug.body(this.player.body);
   }
 
 };
@@ -267,12 +297,3 @@ game.state.add('load', gameState.load);
 game.state.add('main', gameState.main);
 
 game.state.start('load');
-
-setTimeout(createForm,4000);
-createForm();
-
-function createForm(){
-
-    $('canvas').append($('<div><h1>totototot</h1></div>').css({position:'absolute', left: 500, top:100}))
-
-}
