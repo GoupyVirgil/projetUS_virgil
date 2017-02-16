@@ -140,17 +140,16 @@ gameState.main.prototype = {
 
     // player
 
-    this.player.body.collideWorldBounds = true;
     this.player.body.allowGravity = true;
     this.player.body.bounce.y = 0;
     this.player.scale.setTo(0.5);
     this.player.body.collideWorldBounds = true;
 
     this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-    this.player.animations.add('jump', [8, 9, 10,11],8, true);
+    this.player.animations.add('jump', [11],8, true);
 
     // box
-    this.box.scale.setTo(0.3);
+    this.box.scale.setTo(0.03);
 
     // ground
     this.ground.body.collideWorldBounds = true;
@@ -162,6 +161,25 @@ gameState.main.prototype = {
 
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
+
+    this.emitter = this.game.add.emitter(gameWidth-400, gameHeight-270, 5);
+
+   //	This emitter will have a width of 800px, so a particle can emit from anywhere in the range emitter.x += emitter.width / 2
+   this.emitter.width = 200;
+
+   this.emitter.makeParticles('box');
+
+   this.emitter.minParticleSpeed.set(0, 300);
+   this.emitter.maxParticleSpeed.set(0, 400);
+   this.emitter.minParticleScale = 0.02;
+   this.emitter.maxParticleScale = 0.02;
+   this.emitter.bounce.setTo(0.5, 0.5);
+   this.emitter.setRotation(0, 0);
+  //  this.emitter.gravity = 400;
+
+   //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
+   //	The 5000 value is the lifespan of each particle before it's killed
+   this.emitter.start(false, 400, 1000);
 
 
     // var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
@@ -210,9 +228,10 @@ gameState.main.prototype = {
     this.game.physics.arcade.collide(this.player,this.box);
     this.game.physics.arcade.collide(this.player,this.ground);
     this.game.physics.arcade.collide(this.box, this.ground);
-
-    this.game.physics.arcade.overlap(this.player, this.box, function(){;console.log('BOOOOOOOOOOOOOOOOOOM')}, null, this);
-
+    // this.game.physics.arcade.collide(this.emitter, this.ground);
+    this.game.physics.arcade.collide(this.emitter, this.ground);
+    this.game.physics.arcade.overlap(this.player, this.box, function(){console.log('BOOOOOOOOOOOOOOOOOOM')}, null, this);
+    // this.game.pause()
     if (this.spaceKey.isDown && this.player.body.touching.down){
 
 
@@ -288,7 +307,7 @@ gameState.main.prototype = {
   },
 
   render: function(){
-    this.game.debug.body(this.player.body);
+    game.debug.body(this.player.body);
   }
 
 };
