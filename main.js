@@ -52,6 +52,7 @@ gameState.load.prototype = {
     // trap
     this.game.load.image('trap1', 'img/trap1.png');
     this.game.load.image('trap2', 'img/trap2.png');
+
     // bus
     this.game.load.image('bus', 'img/bus.png');
 
@@ -61,8 +62,10 @@ gameState.load.prototype = {
     // roue2
     this.game.load.image('roue2', 'img/roue2.png');
 
+    // player
     this.game.load.spritesheet('player', 'img/sprint.png', 250, 280);
 
+    //box
     this.game.load.image('box', 'img/box.png');
 
     this.game.load.image('popup', 'img/popup.png');
@@ -90,8 +93,11 @@ gameState.main.prototype = {
     this.background.height = gameHeight;
 
 
+
     // BUS INIT
-    this.bus = this.game.add.sprite(gameWidth-600, gameHeight-270, 'bus');
+    this.bus = this.game.add.sprite(gameWidth-600, gameHeight-280, 'bus');
+
+
 
     // TRAP INIT
     this.trap1 = this.game.add.sprite(gameWidth-400, gameHeight-250, 'trap1');
@@ -99,41 +105,61 @@ gameState.main.prototype = {
     this.trap1.anchor.setTo(0, 1);
     this.trap2.anchor.setTo(1, 0);
 
+
+
     // CLOUD INIT
     this.bigCloud = this.game.add.tileSprite(0, 0, gameWidth, 353, 'big-cloud');
     this.averageCloud = this.game.add.tileSprite(0, 0, gameWidth, 184, 'average-cloud');
     this.littleCloud = this.game.add.tileSprite(0, 0, gameWidth, 376, 'little-cloud');
 
-    this.roue1 = this.game.add.sprite(gameWidth-465, gameHeight-55, 'roue1');
-    this.roue2 = this.game.add.sprite(gameWidth-150, gameHeight-55, 'roue2');
+
+
+    this.roue1 = this.game.add.sprite(gameWidth-460, gameHeight-68, 'roue1');
+    this.roue2 = this.game.add.sprite(gameWidth-150, gameHeight-68, 'roue2');
     this.roue1.anchor.setTo(0.5, 0.5);
     this.roue2.anchor.setTo(0.5, 0.5);
 
 
+
     // CAR INIT
-    this.car1 = this.game.add.sprite(0, gameHeight-115, 'car1');
+    this.car1 = this.game.add.sprite(0, gameHeight-130, 'car1');
     this.car1.scale.setTo(0.5);
-    this.car2 = this.game.add.sprite(600, gameHeight-110, 'car2');
+    this.car2 = this.game.add.sprite(600, gameHeight-125, 'car2');
     this.car2.scale.setTo(0.5);
+
+
 
     // GROUND INIT
     this.ground = this.game.add.tileSprite(0, gameHeight-15, gameWidth, 30, 'ground');
 
+
+
     // BIN INIT
-    this.bin1 = this.game.add.sprite(200, gameHeight-80, 'bin');
-    this.bin2 = this.game.add.sprite(1200, gameHeight-80,'bin');
+    this.bin1 = this.game.add.sprite(200, gameHeight-93, 'bin');
+    this.bin2 = this.game.add.sprite(1200, gameHeight-93,'bin');
+
+
 
     // POMPE INIT
-    this.pompe1 = this.game.add.sprite(400,gameHeight-80, 'pompe' );
-    this.pompe2 = this.game.add.sprite(800,gameHeight-80, 'pompe' );
+    this.pompe1 = this.game.add.sprite(400,gameHeight-93, 'pompe' );
+    this.pompe2 = this.game.add.sprite(800,gameHeight-93, 'pompe' );
 
 
 
-
+    // PLAYER INIT
     this.player = this.game.add.sprite(200, game.world.height -160, 'player', 1);
+
+
+
+    // BOX INIT
     this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box');
+
+
+
     // PHYSICS ARCADE
+    // game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
+    // this.game.physics.p2.enable(this.player, true);
     this.game.physics.arcade.gravity.y = 1500;
     this.game.physics.enable([ this.player, this.box, this.ground ], Phaser.Physics.ARCADE);
 
@@ -150,8 +176,10 @@ gameState.main.prototype = {
 
     // box
     this.box.scale.setTo(0.03);
+    this.box.enableBody = true;
 
     // ground
+    this.ground.enableBody = true;
     this.ground.body.collideWorldBounds = true;
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = true;
@@ -168,7 +196,7 @@ gameState.main.prototype = {
    this.emitter.width = 200;
 
    this.emitter.makeParticles('box');
-
+   this.emitter.enableBody = true;
    this.emitter.minParticleSpeed.set(0, 300);
    this.emitter.maxParticleSpeed.set(0, 400);
    this.emitter.minParticleScale = 0.02;
@@ -222,6 +250,8 @@ gameState.main.prototype = {
 
 
     this.box.x -= VELOCITY_GROUND;
+    
+
     //POPUP
     // this.game.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true)
 
@@ -229,7 +259,7 @@ gameState.main.prototype = {
     this.game.physics.arcade.collide(this.player,this.ground);
     this.game.physics.arcade.collide(this.box, this.ground);
     // this.game.physics.arcade.collide(this.emitter, this.ground);
-    this.game.physics.arcade.collide(this.emitter, this.ground);
+    this.game.physics.arcade.collide(this.emitter);
     this.game.physics.arcade.overlap(this.player, this.box, function(){console.log('BOOOOOOOOOOOOOOOOOOM')}, null, this);
     // this.game.pause()
     if (this.spaceKey.isDown && this.player.body.touching.down){
