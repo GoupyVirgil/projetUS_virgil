@@ -1,7 +1,6 @@
-var game = new Phaser.Game('100%', '100%', Phaser.AUTO);
-game.transparent = true;
+let game = new Phaser.Game('100%', '100%', Phaser.AUTO);
 
-var gameState = {};
+let gameState = {};
 
 const VELOCITY_GROUND = 15,
       VELOCITY_BACKGROUND = 0.4,
@@ -9,70 +8,78 @@ const VELOCITY_GROUND = 15,
       VELOCITY_AVERAGE_CLOUD = 0.7,
       VELOCITY_BIG_CLOUD = 0.5;
 
-// On crée un objet "load" à notre objet gameState
+
 gameState.load = function() { };
-// Cet objet load va contenir des méthodes par défaut de Phaser
-// Il va nous permettre de charger nos ressources avant de lancer le jeu
+
 gameState.load.prototype = {
 	preload: function() {
-		// Méthode qui sera appelée pour charger les ressources
-		// Contiendra les ressources à charger (images, sons et JSON)
 
 		// Bout de code qui va permettre au jeu de se redimensionner selon la taille de l'écran
 		this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.setShowAll();
-
 		window.addEventListener('resize', function () {
 			this.game.scale.refresh();
 		});
-
 		this.game.scale.refresh();
 
-    // background
+
+    // BACKGROUND
 		this.game.load.image('background', 'img/background.png');
 
-    // bin
+
+    // BIN
     this.game.load.image('bin', 'img/poubelle.png');
 
-    // car
+
+    // CARS
     this.game.load.image('car1', 'img/car1.png');
     this.game.load.image('car2', 'img/car2.png');
 
-    // pompe
+
+    // POMPE
     this.game.load.image('pompe', 'img/pompe.png');
 
-    // ground
+
+    // GROUND
     this.game.load.image('ground', 'img/ground2.png');
 
-    // nuage
+
+    // CLOUDS
     this.game.load.image('little-cloud', 'img/petit-nuages.png');
     this.game.load.image('average-cloud', 'img/moyen-nuages.png');
     this.game.load.image('big-cloud', 'img/gros-nuages.png');
 
-    // trap
+
+    // TRAPS
     this.game.load.image('trap1', 'img/trap1.png');
     this.game.load.image('trap2', 'img/trap2.png');
 
-    // bus
+    // BUS
     this.game.load.image('bus', 'img/bus.png');
 
-    // roue1
-    this.game.load.image('roue1', 'img/roue2.png');
 
-    // roue2
+    // WHEELS
+    this.game.load.image('roue1', 'img/roue2.png');
     this.game.load.image('roue2', 'img/roue2.png');
 
-    // player
+
+    // PLAYER
     this.game.load.spritesheet('player', 'img/sprint.png', 250, 280);
 
-    //box
+
+    // BOX
     this.game.load.image('box', 'img/box.png');
 
+
+    // POPUP
     this.game.load.image('popup', 'img/popup.png');
+
+    // TRUMP
+    this.game.load.spritesheet('trump', 'img/trump.png', 1398 ,1759);
 	},
 
 	create: function() {
-		// Est appelée après la méthode "preload" afin d'appeler l'état "main" de notre jeu
+
     game.state.start('main');
 
 	}
@@ -82,29 +89,28 @@ gameState.load.prototype = {
 gameState.main = function() { };
 gameState.main.prototype = {
 	create: function() {
-
+    this.game = game;
     // GAME PARAMS
     let gameHeight = this.game.height,
         gameWidth = this.game.width;
 
+    // SCORE INIT
+    this.score = 0;
 
     // BACKGROUND INIT
     this.background = this.game.add.tileSprite(0, -30,gameWidth, gameHeight, 'background');
     this.background.height = gameHeight;
 
 
-
     // BUS INIT
     this.bus = this.game.add.sprite(gameWidth-600, gameHeight-280, 'bus');
 
 
-
     // TRAP INIT
-    this.trap1 = this.game.add.sprite(gameWidth-400, gameHeight-250, 'trap1');
-    this.trap2 = this.game.add.sprite(gameWidth-200, gameHeight-250, 'trap2');
+    this.trap1 = this.game.add.sprite(gameWidth-400, gameHeight-263, 'trap1');
+    this.trap2 = this.game.add.sprite(gameWidth-200, gameHeight-263, 'trap2');
     this.trap1.anchor.setTo(0, 1);
     this.trap2.anchor.setTo(1, 0);
-
 
 
     // CLOUD INIT
@@ -113,12 +119,11 @@ gameState.main.prototype = {
     this.littleCloud = this.game.add.tileSprite(0, 0, gameWidth, 376, 'little-cloud');
 
 
-
+    // WHEELS INIT
     this.roue1 = this.game.add.sprite(gameWidth-460, gameHeight-68, 'roue1');
     this.roue2 = this.game.add.sprite(gameWidth-150, gameHeight-68, 'roue2');
     this.roue1.anchor.setTo(0.5, 0.5);
     this.roue2.anchor.setTo(0.5, 0.5);
-
 
 
     // CAR INIT
@@ -128,10 +133,8 @@ gameState.main.prototype = {
     this.car2.scale.setTo(0.5);
 
 
-
     // GROUND INIT
-    this.ground = this.game.add.tileSprite(0, gameHeight-15, gameWidth, 30, 'ground');
-
+    this.ground = this.game.add.tileSprite(0, gameHeight-15, gameWidth, 30, 'ground',1);
 
 
     // BIN INIT
@@ -139,93 +142,82 @@ gameState.main.prototype = {
     this.bin2 = this.game.add.sprite(1200, gameHeight-93,'bin');
 
 
-
     // POMPE INIT
     this.pompe1 = this.game.add.sprite(400,gameHeight-93, 'pompe' );
     this.pompe2 = this.game.add.sprite(800,gameHeight-93, 'pompe' );
 
 
-
     // PLAYER INIT
-    this.player = this.game.add.sprite(200, game.world.height -160, 'player', 1);
-
+    this.player = this.game.add.sprite(200, game.world.height -160, 'player');
 
 
     // BOX INIT
-    this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box');
-
-
+    this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box',1);
 
     // PHYSICS ARCADE
-    // game.physics.startSystem(Phaser.Physics.P2JS);
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    // this.game.physics.p2.enable(this.player, true);
     this.game.physics.arcade.gravity.y = 1500;
     this.game.physics.enable([ this.player, this.box, this.ground ], Phaser.Physics.ARCADE);
 
 
-    // player
-
+    // PLAYER PARAMS
     this.player.body.allowGravity = true;
     this.player.body.bounce.y = 0;
     this.player.scale.setTo(0.5);
     this.player.body.collideWorldBounds = true;
-
     this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
-    this.player.animations.add('jump', [11],8, true);
+    this.player.animations.add('jump', [11], 8, true);
 
-    // box
+    // BOX PARAMS
     this.box.scale.setTo(0.03);
     this.box.enableBody = true;
 
-    // ground
+    // GROUND PARAMS
     this.ground.enableBody = true;
     this.ground.body.collideWorldBounds = true;
     this.ground.body.immovable = true;
     this.ground.body.allowGravity = true;
 
-    let that = this;
-    this.game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
 
+    // EVENT TO OPEN TRAPS
+    // let that = this;
+    // this.game.time.events.add(Phaser.Timer.SECOND * 4, that.open_trap, this);
+
+    // PLAYER CONTROL
     this.spaceKey = game.input.keyboard.addKey(Phaser.Keyboard.SPACEBAR);
 
 
-    this.emitter = this.game.add.emitter(gameWidth-400, gameHeight-270, 5);
+    // EMITTER INIT
+    this.emitter = this.game.add.emitter(gameWidth-340, gameHeight-280, null);
+    this.emitter.makeParticles('box', 1, 1000, true, false);
 
-   //	This emitter will have a width of 800px, so a particle can emit from anywhere in the range emitter.x += emitter.width / 2
-   this.emitter.width = 200;
+    this.emitter.enableBody = true;
+    this.emitter.minParticleScale = 0.02;
+    this.emitter.maxParticleScale = 0.02;
+    // this.emitter.setXSpeed(-1000,-1000)
+    this.emitter.setRotation(0, 0);
+    this.emitter.minParticleSpeed.set(0, -900);
+    this.emitter.maxParticleSpeed.set(0, -900);
+    this.emitter.angularDrag = 0;
+    this.emitter.enableBodyDebug = true;
+    this.emitter.gravity = 4000;
 
-   this.emitter.makeParticles('box');
-   this.emitter.enableBody = true;
-   this.emitter.minParticleSpeed.set(0, 300);
-   this.emitter.maxParticleSpeed.set(0, 400);
-   this.emitter.minParticleScale = 0.02;
-   this.emitter.maxParticleScale = 0.02;
-   this.emitter.bounce.setTo(0.5, 0.5);
-   this.emitter.setRotation(0, 0);
-  //  this.emitter.gravity = 400;
-
-   //	false means don't explode all the sprites at once, but instead release at a rate of one particle per 100ms
-   //	The 5000 value is the lifespan of each particle before it's killed
-   this.emitter.start(false, 400, 1000);
-
-
-    // var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
-    //
-    // var text = game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
-    //
-    // text.anchor.set(0.5);
+    // start(?, tempsjusqu'à descruction, temps apparition, nb de particle);
+    // SCORE
+    this.scoreText = this.game.add.text(16, 16, 'Score: '+this.score, { fontSize: '32px', fill: '#000' });
 
 
+    // CLICK TO START
+    var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+    this.text = this.game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
+    this.text.anchor.set(0.5);
 
-    // POPUP
-    // this.popup = game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'popup' );
-    // this.popup.anchor.set(0.5);
-
+    this.firstTape = true;
 	},
 
 	update: function() {
-		// Boucle principale du jeu (détection de collisions, déplacement du personnage...)
+    let that = this;
+    //VELOCITY PARAMS FOR EACH SPRITE
     this.littleCloud.tilePosition.x -= VELOCITY_LITTLE_CLOUD;
     this.averageCloud.tilePosition.x -= VELOCITY_AVERAGE_CLOUD;
     this.bigCloud.tilePosition.x -= VELOCITY_BIG_CLOUD;
@@ -246,22 +238,24 @@ gameState.main.prototype = {
 
     this.car_control( this.car1, this.car2 );
 
-    // this.player.animations.play('run');
-
-
-    this.box.x -= VELOCITY_GROUND;
-    
-
-    //POPUP
-    // this.game.add.tween(this.popup.scale).to( { x: 1, y: 1 }, 1000, Phaser.Easing.Elastic.Out, true)
-
-    this.game.physics.arcade.collide(this.player,this.box);
+    // COLLIDES
     this.game.physics.arcade.collide(this.player,this.ground);
     this.game.physics.arcade.collide(this.box, this.ground);
-    // this.game.physics.arcade.collide(this.emitter, this.ground);
-    this.game.physics.arcade.collide(this.emitter);
-    this.game.physics.arcade.overlap(this.player, this.box, function(){console.log('BOOOOOOOOOOOOOOOOOOM')}, null, this);
-    // this.game.pause()
+    this.game.physics.arcade.collide(this.emitter, this.ground);
+
+    this.game.physics.arcade.overlap(this.emitter, this.player,function(){}, function(){
+      that.stop_game();
+    }, this);
+
+    if( this.spaceKey.isDown && this.firstTape){
+
+      this.open_trap();
+      this.emitter.start(false, 8000, 1000);
+      this.text.destroy();
+      this.firstTape = false;
+
+    }
+
     if (this.spaceKey.isDown && this.player.body.touching.down){
 
 
@@ -269,17 +263,66 @@ gameState.main.prototype = {
 
     }
     else if(!this.player.body.touching.down){
-        this.player.animations.play('jump');
-    }else{
 
-      this.player.animations.play('run');
+        this.player.animations.play('jump');
 
     }
+    else{
+
+        this.player.animations.play('run');
+
+    }
+
+    this.emitter.forEachExists(
+        function( p ){
+            p.x -= 15;
+
+          	if(p.position.x <= that.player.position.x){
+              that.score += 100;
+              that.scoreText.text = 'Score: ' + that.score;
+              p.destroy();
+            }
+        }
+    );
+
+    this.update_emitter(this.emitter);
 	},
 
+  stop_game: function(){
+
+    var that = this;
+    this.popup = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'popup', 1);
+
+    this.trump = this.game.add.sprite(this.game.world.centerX-350 , this.game.world.centerY-200, 'trump', 1);
+    this.trump.scale.setTo(0.2);
+    this.trump.animations.add('talk', [0, 1], 10, false);
+    this.trump.animations.play('talk');
+    // this.button = this.game.add.button(game.world.centerX, this.game.world.centerY, 'hil', that.action(), this);
+    // this.button.backgroundColor = 'black';
+    this.popup.anchor.set(0.5);
+
+    // SNIPPET PERSIST
+    let stringToPersist = "name=virgil&score="+this.score;
+    let xmlhttp = new XMLHttpRequest();
+    xmlhttp.open("POST", "index.php");
+    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+    xmlhttp.send(stringToPersist);
+
+    this.game._paused = true;
+
+
+  },
+
   open_trap: function(){
+
     game.add.tween(this.trap1).to( {angle:-100}, 2000, Phaser.Easing.Exponential.Out, true);
     game.add.tween(this.trap2).to( {angle:100}, 2000, Phaser.Easing.Exponential.Out, true);
+
+  },
+
+  action: function(){
+
+    console.log("YOLOOOOO");
   },
 
   get_random_int_inclusive :function ( min, max ) {
@@ -316,28 +359,33 @@ gameState.main.prototype = {
 
   },
 
-  progressive_scale: function( object ){
+  update_emitter: function (emitter){
 
-    let interval = setInterval(function () {
+    if( this.score <= 1000){
 
-      let carScale = 0.5;
-      if( carScale <= 0.20){
+      this.emitter.frequency = 900;
 
-          clearInterval( interval );
+    }else if ( this.score <= 2000){
 
-      }else{
+      this.emitter.frequency = 900;
 
-          object.scale.setTo(carScale - 0.02);
-      }
+    }else if ( this.score <= 3000){
 
+      this.emitter.frequency = 700;
 
+    }else if ( this.score <= 4000){
 
-    }, 500);
+      this.emitter.frequency = 600;
+
+    }
 
   },
 
   render: function(){
-    game.debug.body(this.player.body);
+
+    this.game.debug.body(this.player);
+    this.game.debug.body(this.emitter);
+
   }
 
 };
