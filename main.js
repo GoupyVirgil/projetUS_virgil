@@ -14,6 +14,10 @@ gameState.load = function() { };
 gameState.load.prototype = {
 	preload: function() {
 
+    game.load.image('disk', 'assets/sprites/ra_dont_crack_under_pressure.png');
+
+    //  Firefox doesn't support mp3 files, so use ogg
+    game.load.audio('song', ['audio/song_level_3.mp3', 'audio/song_level_3.ogg']);
 		// Bout de code qui va permettre au jeu de se redimensionner selon la taille de l'écran
 		this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.setShowAll();
@@ -213,9 +217,15 @@ gameState.main.prototype = {
     this.text.anchor.set(0.5);
 
     this.firstTape = true;
+
+    this.music = game.add.audio('song');
+
+
 	},
 
 	update: function() {
+
+
     let that = this;
     //VELOCITY PARAMS FOR EACH SPRITE
     this.littleCloud.tilePosition.x -= VELOCITY_LITTLE_CLOUD;
@@ -248,7 +258,7 @@ gameState.main.prototype = {
     }, this);
 
     if( this.spaceKey.isDown && this.firstTape){
-
+      this.music.play();
       this.open_trap();
       this.emitter.start(false, 8000, 1000);
       this.text.destroy();
@@ -302,13 +312,13 @@ gameState.main.prototype = {
     this.popup.anchor.set(0.5);
 
     // SNIPPET PERSIST
-    let stringToPersist = "name=virgil&score="+this.score;
-    let xmlhttp = new XMLHttpRequest();
-    xmlhttp.open("POST", "index.php");
-    xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-    xmlhttp.send(stringToPersist);
+
 
     this.game._paused = true;
+
+    this.game.destroy();
+
+    game_over();
 
 
   },
@@ -318,11 +328,6 @@ gameState.main.prototype = {
     game.add.tween(this.trap1).to( {angle:-100}, 2000, Phaser.Easing.Exponential.Out, true);
     game.add.tween(this.trap2).to( {angle:100}, 2000, Phaser.Easing.Exponential.Out, true);
 
-  },
-
-  action: function(){
-
-    console.log("YOLOOOOO");
   },
 
   get_random_int_inclusive :function ( min, max ) {
@@ -394,3 +399,17 @@ game.state.add('load', gameState.load);
 game.state.add('main', gameState.main);
 
 game.state.start('load');
+
+
+function game_over(){
+
+
+  window.document.getElementsByTagName('body')[0].innerHTML +='<div>toto</div>';
+
+  let stringToPersist = "name=virgil&score="+this.score;
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.open("POST", "index.php");
+  xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlhttp.send(stringToPersist);
+
+}
