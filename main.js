@@ -68,7 +68,7 @@ gameState.load.prototype = {
 
 
     // BOX
-    this.game.load.image('box', 'img/box.png');
+    this.game.load.image('box', 'img/box.jpg', 20,20);
 
 
     // POPUP
@@ -152,11 +152,11 @@ gameState.main.prototype = {
 
 
     // BOX INIT
-    this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box',1);
+    this.box = this.game.add.sprite(gameWidth, gameHeight-500, 'box');
 
     // PHYSICS ARCADE
     this.game.physics.startSystem(Phaser.Physics.ARCADE);
-    this.game.physics.arcade.gravity.y = 1500;
+    this.game.physics.arcade.gravity.y = 4000;
     this.game.physics.enable([ this.player, this.box, this.ground ], Phaser.Physics.ARCADE);
 
 
@@ -169,7 +169,7 @@ gameState.main.prototype = {
     this.player.animations.add('jump', [11], 8, true);
 
     // BOX PARAMS
-    this.box.scale.setTo(0.03);
+    this.box.scale.setTo(1);
     this.box.enableBody = true;
 
     // GROUND PARAMS
@@ -189,15 +189,15 @@ gameState.main.prototype = {
 
     // EMITTER INIT
     this.emitter = this.game.add.emitter(gameWidth-340, gameHeight-280, null);
-    this.emitter.makeParticles('box', 1, 1000, true, false);
+    this.emitter.makeParticles('box', 1, 500, true, false);
 
     this.emitter.enableBody = true;
-    this.emitter.minParticleScale = 0.02;
-    this.emitter.maxParticleScale = 0.02;
+    // this.emitter.minParticleScale = 1;
+    // this.emitter.maxParticleScale = 1;
     // this.emitter.setXSpeed(-1000,-1000)
     this.emitter.setRotation(0, 0);
-    this.emitter.minParticleSpeed.set(0, -900);
-    this.emitter.maxParticleSpeed.set(0, -900);
+    this.emitter.minParticleSpeed.set(-900, -900);
+    this.emitter.maxParticleSpeed.set(-900, -900);
     this.emitter.angularDrag = 0;
     this.emitter.enableBodyDebug = true;
     this.emitter.gravity = 4000;
@@ -259,7 +259,7 @@ gameState.main.prototype = {
     if (this.spaceKey.isDown && this.player.body.touching.down){
 
 
-        this.player.body.velocity.y = -500;
+        this.player.body.velocity.y = -900;
 
     }
     else if(!this.player.body.touching.down){
@@ -275,7 +275,7 @@ gameState.main.prototype = {
 
     this.emitter.forEachExists(
         function( p ){
-            p.x -= 15;
+            // p.x -= 15;
 
           	if(p.position.x <= that.player.position.x){
               that.score += 100;
