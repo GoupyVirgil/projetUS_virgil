@@ -103,7 +103,7 @@ gameState.main.prototype = {
 
     // BACKGROUND INIT
     this.background = this.game.add.tileSprite(0, -30,gameWidth, gameHeight, 'background');
-    this.background.height = gameHeight;
+    // this.background.height = gameHeight;
 
 
     // BUS INIT
@@ -165,6 +165,7 @@ gameState.main.prototype = {
 
 
     // PLAYER PARAMS
+    this.player.body.setRectangle (75, 160, 0, 0); 
     this.player.body.allowGravity = true;
     this.player.body.bounce.y = 0;
     this.player.scale.setTo(0.5);
@@ -212,9 +213,10 @@ gameState.main.prototype = {
 
 
     // CLICK TO START
-    var style = { font: "65px Arial", fill: "#ff0044", align: "center" };
+    var style = { font: "65px Open sans", fill: "blue", align: "center", backgroundColor: "white" };
     this.text = this.game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
     this.text.anchor.set(0.5);
+    this.text.padding = 100;
 
     this.firstTape = true;
 
