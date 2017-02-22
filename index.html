@@ -56,14 +56,10 @@ window.onload = function() {
 
                   container.innerHTML += '<div class="score"><span>' + ( i + 1 ) + '</span><span>' + data[i].name + '</span><span>' + data[i].date +'</span><span>'+ data[i].score+'</span></div>';
 
-                  i++;
 
                 }
-
-            
-            
-       
-       }
+      
+	       }
 	  };
 
 	xmlhttp.open("GET", "score.php");

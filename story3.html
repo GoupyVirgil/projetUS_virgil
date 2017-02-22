@@ -45,7 +45,7 @@
 
 		window.onload = function() { 
 	                
-			let score =  parseInt(window.location.href.split('?')[1].split('=')[1]);
+			let score =  parseInt(window.location.href.split('?')[1].split('=')[1]) || 500;
 
 			window.document.getElementById('start').href = "level3.html?score="+ score;
 	            

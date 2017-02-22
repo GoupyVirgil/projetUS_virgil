@@ -7,7 +7,17 @@ var level2 = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window
     render: render
 });
 
-let previousScore = parseInt(window.location.href.split('?')[1].split('=')[1]);
+let previousScore;
+
+if( window.location.href.split('?').length > 1 ){
+
+    previousScore = parseInt(window.location.href.split('?')[1].split('=')[1])
+
+}else{
+
+    previousScore = 500;
+    
+}
 
 
 function preload() {
@@ -26,9 +36,9 @@ function preload() {
 
     level2.load.spritesheet('hil', 'dest/img/level2/sprite_complete.png', 353, 295);
 
-    level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
-    level2.load.audio('copsSound', 'sounds/copsSound.wav');
-    level2.load.audio('explo', 'sounds/explo.wav');
+    // level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
+    // level2.load.audio('copsSound', 'sounds/copsSound.wav');
+    // level2.load.audio('explo', 'sounds/explo.wav');
     level2.load.audio('mainSong', 'sounds/song_level_2.wav');
 
 }
@@ -51,7 +61,7 @@ var emailKilled;
 var mainSong;
 var timer;
 var total = 0;
-var counter = 5;
+var counter = 70;
 var text;
 var mute;
 random = Math.random();
@@ -204,7 +214,7 @@ function create() {
 
 
     //Timer
-    text = level2.add.text(level2.world.centerX - 80, 40, 'Timer : 5', {
+    text = level2.add.text(level2.world.centerX - 80, 40, 'Timer : 70', {
         fontSize: "25px",
         fill: "#9296e7",
         align: "center"

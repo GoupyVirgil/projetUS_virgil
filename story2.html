@@ -28,10 +28,20 @@
 						Use <img src="dest/img/cursor.png" alt="Use cursor left and right to play"/> to move to the left or right to chop the emails.<br/>
 						Use <img src="dest/img/key_m.png" class="mute" alt="Use m to mute music"/> to mute the music.
 					</p>
-					<a class="btn tryAgain" href="level2.html">Start game</a>
+					<a id="start" class="btn tryAgain" href="level2.html">Start game</a>
 				</section>
 			</section>
 		</div>
 	</body>
-	<!-- <script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script> -->
+	<script type="text/javascript">
+
+		window.onload = function() { 
+	                
+			let score =  parseInt(window.location.href.split('?')[1].split('=')[1]) || 500;
+
+			window.document.getElementById('start').href = "level3.html?score="+ score;
+	            
+	    }
+
+	</script>
 </html>

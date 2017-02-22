@@ -18,7 +18,7 @@ gameState.load.prototype = {
 	preload: function() {
 
     //  Firefox doesn't support mp3 files, so use ogg
-    game.load.audio('song', ['audio/song_level_3.mp3', 'audio/song_level_3.ogg']);
+    game.load.audio('song', ['audio/song_level_3.mp3', 'sounds/song_level_3.ogg']);
 		// Bout de code qui va permettre au jeu de se redimensionner selon la taille de l'écran
 		this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.setShowAll();
@@ -416,38 +416,3 @@ function game_over(){
 
 }
 
-function get_highscore(){
-
-  
-
-  let stringToPersist = "score=true";
-  let xmlhttp = new XMLHttpRequest();
-  xmlhttp.onreadystatechange = function() {
-        if (this.readyState == 4 && this.status == 200) {
-
-            let data = JSON.parse(this.responseText);
-
-
-            window.onload = function() { 
-                let body = window.document.getElementsByTagName('body')[0];
-                for ( row in data){
-
-
-                  body.innerHTML += "<h1>row</h1>";
-
-
-                }
-
-            }
-            
-       
-       }
-  };
-  xmlhttp.open("GET", "score.php");
-  xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
-  xmlhttp.send(stringToPersist);
-
-}
-
-
-get_highscore();
