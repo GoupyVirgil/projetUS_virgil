@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+	    <meta charset="UTF-8">
+	    <title>Hillary's Run</title>
+	    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet">
+	    <link rel="stylesheet" href="dest/css/style.min.css"/>
+	</head>
+	<body>
+		<div class="wrapper">
+			<section class="gameOver" id="gameOver">
+				<section class="trump"></section>
+				<section class="content">
+					<h1><span>Game</span> Over</h1>
+					<p>You didn't succeed to pass this step, you're now out of elections !</p>
+					<span class="score"></span>
+					<form action="">
+						<input id="name" type="text" placeholder="Add your name ..."/>
+						<a id="submit" class="btn submit">Submit</a>
+					</form>
+					<a class="btn tryAgain" href="level2.html">Try again</a>
+				</section>
+			</section>
+		</div>
+	</body>
+	<script type="text/javascript">
+
+	window.onload = function() { 
+                
+		let score =  parseInt(window.location.href.split('?')[1].split('=')[1]);
+		let name;
+
+		window.document.getElementsByClassName('score')[0].innerHTML += "Score :  <strong>"+score+"</strong>";
+		window.document.getElementById('submit').addEventListener('click', function(){
+
+			name = window.document.getElementById('name').value;
+
+			if( name.length > 0 ){
+
+				game_over();
+
+			}
+
+		});
+
+		function game_over(){
+
+		  window.document.getElementsByTagName('body')[0].innerHTML +='<div>toto</div>';
+
+		  let stringToPersist = "name="+name+"&score="+score;
+		  let xmlhttp = new XMLHttpRequest();
+		  xmlhttp.open("POST", "score.php");
+		  xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		  xmlhttp.send(stringToPersist);
+
+		  xmlhttp.onreadystatechange = function() {
+		        if (this.readyState == 4 && this.status == 200) {
+
+		            window.location.href = "level2.html";
+		       
+		       }
+		  };
+
+		}
+            
+    }
+
+	</script>
+</html>

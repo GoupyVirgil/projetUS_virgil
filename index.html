@@ -1,43 +1,77 @@
-<!DOCTYPE HTML>
-<html>
-	<head>
-		<title>Hillarcade</title>
-		<meta charset="utf-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
-		<link rel="icon" href="img/favicon.png" type="image/png">
-		<script src="phaser.min.js"></script>
-		<script type="text/javascript" src="main.js"/></script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hillary's Run</title>
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,500,700" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,400i,700" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.5.2/animate.min.css">
+    <link rel="stylesheet" href="dest/css/style.min.css" />
+</head>
+<body>
+    <div class="wrapper">
+        <section class="home" id="home">
+            <div class="home_block left">
+                <div class="highscore">
+                    
+                </div>
+                <span class="cupContent">
+                	<!-- <img src="dest/img/cup.png" alt="cup" id="cup"/> -->
+                </span>
+            </div>
+            <div class="home_block right">
+                <div class="trump">
+                    <div class="home_block_txtContent">
+                        <h1 class="wow slideInDown"><strong>Hil'</strong>Arcade</h1>
+                        <p class="wow slideInRight">
+                            Revivez la campagne en 3 étapes clefs.
+                            <br/> Lorem ipsum dolor sit amet, consectetur adipisicing elit. Non dolorem, minima. Totam neque, facere iure, dicta possimus cum! Veniam perferendis iste doloremque illo fugiat, id culpa sunt consequuntur aliquam? Quod.
+                        </p>
+                        <a class="wow btn slideInUp" href="story2.html">Start !</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+<script src="https://code.jquery.com/jquery-2.2.4.min.js" integrity="sha256-BbhdlvQf/xTY9gja0Dq3HiwQF8LaCRTXxZKRutelT44=" crossorigin="anonymous"></script>
+<script type="text/javascript" src="dest/js/lib/wow.js"></script>
+<script type="text/javascript" src="dest/js/script.js"></script>
+<script type="text/javascript">
+window.onload = function() {
 
-		<link rel="stylesheet" href="style.css"/>
-	</head>
+	let xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
 
-	<body>
-		<div id="overlay">
-     		Loading...
-		</div>
-	<script type="text/javascript">
+        if (this.readyState == 4 && this.status == 200) {
 
-		// let i = 0
-		// setTimeout(function() {
-
-
-		// 	if(window.document.getElementsByTagName('canvas')){
+            let data = JSON.parse(this.responseText);
+            	console.log(data);
+            	console.log(this.responseText);
+             
+                let container = window.document.getElementsByClassName('highscore')[0];
+                let dataLength = data.length;
+                for ( let i = 0; i < dataLength; i++){
 
 
-		// 		window.document.getElementById('overlay').style.display = 'none';
+                  container.innerHTML += '<div class="score"><span>' + ( i + 1 ) + '</span><span>' + data[i].name + '</span><span>' + data[i].date +'</span><span>'+ data[i].score+'</span></div>';
 
-		// 	}
+                  i++;
 
-		// 	i++;
-		// 	console.log(i);
+                }
 
-		// }, 100);
-		window.onload = function() { 
-			window.document.getElementById('overlay').style.display = 'none';
-		}
-		</script>
-	</body>
+            
+            
+       
+       }
+	  };
 
-	
+	xmlhttp.open("GET", "score.php");
+	xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+	xmlhttp.send();
+}
+
+
+
+</script>
 </html>
