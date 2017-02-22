@@ -4,7 +4,8 @@
 		<title>Hillarcade</title>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-
+		<link href="https://fonts.googleapis.com/css?family=Montserrat" rel="stylesheet">
+		<link rel="icon" href="img/favicon.png" type="image/png">
 		<script src="phaser.min.js"></script>
 		<script type="text/javascript" src="main.js"/></script>
 
@@ -12,6 +13,31 @@
 	</head>
 
 	<body>
+		<div id="overlay">
+     		Loading...
+		</div>
+	<script type="text/javascript">
 
+		// let i = 0
+		// setTimeout(function() {
+
+
+		// 	if(window.document.getElementsByTagName('canvas')){
+
+
+		// 		window.document.getElementById('overlay').style.display = 'none';
+
+		// 	}
+
+		// 	i++;
+		// 	console.log(i);
+
+		// }, 100);
+		window.onload = function() { 
+			window.document.getElementById('overlay').style.display = 'none';
+		}
+		</script>
 	</body>
+
+	
 </html>

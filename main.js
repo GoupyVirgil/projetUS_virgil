@@ -1,6 +1,7 @@
 let game = new Phaser.Game('100%', '100%', Phaser.AUTO);
 
 let gameState = {};
+let score = 0;
 
 const VELOCITY_GROUND = 15,
       VELOCITY_BACKGROUND = 0.4,
@@ -165,11 +166,12 @@ gameState.main.prototype = {
 
 
     // PLAYER PARAMS
-    this.player.body.setRectangle (75, 160, 0, 0); 
+    // this.player.body.setRectangle (75, 160, 0, 0); 
     this.player.body.allowGravity = true;
     this.player.body.bounce.y = 0;
     this.player.scale.setTo(0.5);
     this.player.body.collideWorldBounds = true;
+    this.player.body.setSize(100, 200, 70, 80);
     this.player.animations.add('run', [0, 1, 2, 3, 4, 5, 6, 7], 10, true);
     this.player.animations.add('jump', [11], 8, true);
 
@@ -209,11 +211,14 @@ gameState.main.prototype = {
 
     // start(?, tempsjusqu'à descruction, temps apparition, nb de particle);
     // SCORE
-    this.scoreText = this.game.add.text(16, 16, 'Score: '+this.score, { fontSize: '32px', fill: '#000' });
-
+    
+    this.dialog = this.game.add.graphics(this.game.world.centerX - 400, 30);
+    this.dialog.beginFill(0xFFFFFF, 1);
+    this.dialog.drawRoundedRect(0, 0, 740, 50, 30);
+    this.scoreText = this.game.add.text(this.game.world.centerX - 400, 30, 'Score: '+ this.score, { fontSize: '32px', fill: '#000' });
 
     // CLICK TO START
-    var style = { font: "65px Open sans", fill: "blue", align: "center", backgroundColor: "white" };
+    var style = { font: "65px Montserrat uppercase", fill: "blue", align: "center", backgroundColor: "white" };
     this.text = this.game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
     this.text.anchor.set(0.5);
     this.text.padding = 100;
@@ -291,6 +296,7 @@ gameState.main.prototype = {
 
           	if(p.position.x <= that.player.position.x){
               that.score += 100;
+              score += 100
               that.scoreText.text = 'Score: ' + that.score;
               p.destroy();
             }
@@ -405,13 +411,56 @@ game.state.start('load');
 
 function game_over(){
 
-
   window.document.getElementsByTagName('body')[0].innerHTML +='<div>toto</div>';
 
-  let stringToPersist = "name=virgil&score="+this.score;
+  let stringToPersist = "name=virgil&score="+score;
   let xmlhttp = new XMLHttpRequest();
-  xmlhttp.open("POST", "index.php");
+  xmlhttp.open("POST", "score.php");
+  xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+  xmlhttp.send(stringToPersist);
+
+  xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+
+            console.log(this.responseText);
+       
+       }
+  };
+
+}
+
+function get_highscore(){
+
+  
+
+  let stringToPersist = "score=true";
+  let xmlhttp = new XMLHttpRequest();
+  xmlhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+
+            let data = JSON.parse(this.responseText);
+
+
+            window.onload = function() { 
+                let body = window.document.getElementsByTagName('body')[0];
+                for ( row in data){
+
+
+                  body.innerHTML += "<h1>row</h1>";
+
+
+                }
+
+            }
+            
+       
+       }
+  };
+  xmlhttp.open("GET", "score.php");
   xmlhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
   xmlhttp.send(stringToPersist);
 
 }
+
+
+get_highscore();

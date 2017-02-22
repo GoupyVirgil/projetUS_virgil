@@ -7,8 +7,9 @@ body {
 	/*margin: auto;
 	display: table;*/
 }
+
 canvas{
 
-	position:absolute;
+	display: none;
 
 }
