@@ -3,7 +3,17 @@ let game = new Phaser.Game('100%', '100%', Phaser.AUTO);
 let gameState = {};
 let score = 0;
 
-let previousScore = parseInt(window.location.href.split('?')[1].split('=')[1]);
+let previousScore;
+
+if( window.location.href.split('?').length > 1 ){
+
+    previousScore = parseInt(window.location.href.split('?')[1].split('=')[1])
+
+}else{
+
+    previousScore = 500;
+    
+}
 
 const VELOCITY_GROUND = 15,
       VELOCITY_BACKGROUND = 0.4,
@@ -18,7 +28,7 @@ gameState.load.prototype = {
 	preload: function() {
 
     //  Firefox doesn't support mp3 files, so use ogg
-    game.load.audio('song', ['audio/song_level_3.mp3', 'sounds/song_level_3.ogg']);
+    game.load.audio('song', ['sounds/song_level_3.mp3', 'sounds/song_level_3.ogg']);
 		// Bout de code qui va permettre au jeu de se redimensionner selon la taille de l'écran
 		this.game.scaleMode = Phaser.ScaleManager.SHOW_ALL;
 		this.game.scale.setShowAll();
@@ -39,8 +49,8 @@ gameState.load.prototype = {
 
 
     // CARS
-    this.game.load.image('car1', 'dest/img/level3/car1.png');
-    this.game.load.image('car2', 'dest/img/level3/car2.png');
+    // this.game.load.image('car1', 'dest/img/level3/car1.png');
+    // this.game.load.image('car2', 'dest/img/level3/car2.png');
 
 
     // POMPE
@@ -75,7 +85,7 @@ gameState.load.prototype = {
 
 
     // BOX
-    this.game.load.image('box', 'dest/img/level3/box.jpg', 20,20);
+    this.game.load.image('box', 'dest/img/level3/black_box.png', 20,20);
 
 
     // POPUP
@@ -83,6 +93,9 @@ gameState.load.prototype = {
 
     // TRUMP
     this.game.load.spritesheet('trump', 'dest/img/level3/trump.png', 1398 ,1759);
+
+    // OVERLAY
+    this.game.load.image('overlay', 'dest/img/overlay.png');
 	},
 
 	create: function() {
@@ -96,6 +109,7 @@ gameState.load.prototype = {
 gameState.main = function() { };
 gameState.main.prototype = {
 	create: function() {
+
     this.game = game;
     // GAME PARAMS
     let gameHeight = this.game.height,
@@ -134,10 +148,10 @@ gameState.main.prototype = {
 
 
     // CAR INIT
-    this.car1 = this.game.add.sprite(0, gameHeight-130, 'car1');
-    this.car1.scale.setTo(0.5);
-    this.car2 = this.game.add.sprite(600, gameHeight-125, 'car2');
-    this.car2.scale.setTo(0.5);
+    // this.car1 = this.game.add.sprite(0, gameHeight-130, 'car1');
+    // this.car1.scale.setTo(0.5);
+    // this.car2 = this.game.add.sprite(600, gameHeight-125, 'car2');
+    // this.car2.scale.setTo(0.5);
 
 
     // GROUND INIT
@@ -145,13 +159,13 @@ gameState.main.prototype = {
 
 
     // BIN INIT
-    this.bin1 = this.game.add.sprite(200, gameHeight-93, 'bin');
-    this.bin2 = this.game.add.sprite(1200, gameHeight-93,'bin');
+    // this.bin1 = this.game.add.sprite(200, gameHeight-93, 'bin');
+    // this.bin2 = this.game.add.sprite(1200, gameHeight-93,'bin');
 
 
-    // POMPE INIT
-    this.pompe1 = this.game.add.sprite(400,gameHeight-93, 'pompe' );
-    this.pompe2 = this.game.add.sprite(800,gameHeight-93, 'pompe' );
+    // // POMPE INIT
+    // this.pompe1 = this.game.add.sprite(400,gameHeight-93, 'pompe' );
+    // this.pompe2 = this.game.add.sprite(800,gameHeight-93, 'pompe' );
 
 
     // PLAYER INIT
@@ -214,22 +228,39 @@ gameState.main.prototype = {
     // start(?, tempsjusqu'à descruction, temps apparition, nb de particle);
     // SCORE
     
-    this.dialog = this.game.add.graphics(this.game.world.centerX - 400, 30);
+    this.dialog = this.game.add.graphics(this.game.world.centerX-120, 30);
     this.dialog.beginFill(0xFFFFFF, 1);
-    this.dialog.drawRoundedRect(0, 0, 740, 50, 30);
-    this.scoreText = this.game.add.text(this.game.world.centerX - 400, 30, 'Score: '+ this.score, { fontSize: '32px', fill: '#000' });
+    this.dialog.drawRoundedRect(0, 0, 240, 50, 30);
+    this.scoreText = this.game.add.text(this.game.world.centerX -30, 45, 'Score: '+ this.score, {
+        fontSize: '20px',
+        fill: '#3c68f7',
+        background: '#000'
+    });
 
     // CLICK TO START
-    var style = { font: "65px Montserrat uppercase", fill: "blue", align: "center", backgroundColor: "white" };
-    this.text = this.game.add.text(game.world.centerX, game.world.centerY, "space to start", style);
-    this.text.anchor.set(0.5);
-    this.text.padding = 100;
+    var style = { font: "65px Montserrat", fill: "white", align: "center" };
+
+    
 
     this.firstTape = true;
 
     this.music = game.add.audio('song');
 
+    this.overlay = this.game.add.sprite(0, 0, 'overlay');
+    this.overlay.width = this.game.width;
+    this.overlay.height = this.game.height;
+    this.overlay.visible = true;
 
+    this.text = this.game.add.text(this.game.world.centerX, this.game.world.centerY, 'P R E S S   S P A C E   T O   S T A R T', {
+                font: '40px Arial',
+                fill: '#fff',
+                align: 'center',
+                fontWeight : 'bold'
+            });
+
+    // this.text.fontWeight = 'bold';
+    this.text.anchor.set(0.5);
+    this.text.padding = 100;
 	},
 
 	update: function() {
@@ -242,20 +273,22 @@ gameState.main.prototype = {
     this.bigCloud.tilePosition.x -= VELOCITY_BIG_CLOUD;
     this.background.tilePosition.x -= VELOCITY_BACKGROUND;
     this.ground.tilePosition.x -= VELOCITY_GROUND;
-    this.bin1.x -= VELOCITY_GROUND;
-    this.bin2.x -= VELOCITY_GROUND;
-    this.pompe1.x -= VELOCITY_GROUND;
-    this.pompe2.x -= VELOCITY_GROUND;
+    // this.car1 += 5 ;
+    // this.car2 += 5; 
+    // this.bin1.x -= VELOCITY_GROUND;
+    // this.bin2.x -= VELOCITY_GROUND;
+    // this.pompe1.x -= VELOCITY_GROUND;
+    // this.pompe2.x -= VELOCITY_GROUND;
 
-    this.update_element_position( this.bin1 );
-    this.update_element_position( this.bin2 );
-    this.update_element_position( this.pompe1 );
-    this.update_element_position( this.pompe2 );
+    // this.update_element_position( this.car1 );
+    // this.update_element_position( this.car1 );
+    // this.update_element_position( this.pompe1 );
+    // this.update_element_position( this.pompe2 );
 
     this.roue1.angle += VELOCITY_GROUND;
     this.roue2.angle += VELOCITY_GROUND;
 
-    this.car_control( this.car1, this.car2 );
+    // this.car_control( this.car1, this.car2 );
 
     // COLLIDES
     this.game.physics.arcade.collide(this.player,this.ground);
@@ -271,6 +304,7 @@ gameState.main.prototype = {
       this.open_trap();
       this.emitter.start(false, 8000, 1000);
       this.text.destroy();
+      this.overlay.destroy();
       this.firstTape = false;
 
     }
@@ -365,6 +399,7 @@ gameState.main.prototype = {
       if ( car1.x >= ( car2.x - car2.width - 20 )){
 
           car1.x += 0;
+          // car2.x += 5;
 
       }else{
 
@@ -372,25 +407,43 @@ gameState.main.prototype = {
 
       }
 
+      // if( car2.x == this.game.width ){
+
+      //     car2.x -= 5;
+      //     car1.x -
+      // }
+
   },
 
   update_emitter: function (emitter){
 
     if( this.score <= 1000){
 
-      this.emitter.frequency = 900;
+      this.emitter.frequency = 1000;
 
     }else if ( this.score <= 2000){
 
-      this.emitter.frequency = 800;
+      this.emitter.frequency = 900;
 
     }else if ( this.score <= 3000){
 
-      this.emitter.frequency = 700;
+      this.emitter.frequency = 800;
 
     }else if ( this.score <= 4000){
 
+      this.emitter.frequency = 700;
+
+    }else if ( this.score <= 5000){
+
       this.emitter.frequency = 600;
+
+    }else if ( this.score <= 6000){
+
+      this.emitter.frequency = 500;
+
+    }else if ( this.score <= 7000){
+
+      this.emitter.frequency = 400;
 
     }
 

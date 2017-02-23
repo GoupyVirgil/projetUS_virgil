@@ -32,14 +32,14 @@ function preload() {
     level2.load.image('ground', 'dest/img/level2/ground.png');
     level2.load.image('ground2', 'dest/img/level2/ground2.png');
     level2.load.image('fbi', 'dest/img/level2/fbi.png');
-    // level2.load.image('hil', 'img/level2/hil.png', 250, 280);
+    level2.load.image('overlay', 'dest/img/overlay.png');
 
     level2.load.spritesheet('hil', 'dest/img/level2/sprite_complete.png', 353, 295);
 
-    // level2.load.audio('emailKilled', 'sounds/emailKilled.wav');
-    // level2.load.audio('copsSound', 'sounds/copsSound.wav');
+    level2.load.audio('emailKilled', 'sounds/emailKilled.mp3');
+    level2.load.audio('copsSound', 'sounds/copsSound.mp3');
     // level2.load.audio('explo', 'sounds/explo.wav');
-    level2.load.audio('mainSong', 'sounds/song_level_2.wav');
+    level2.load.audio('mainSong', ['sounds/song_level_2.mp3','sounds/song_level_2.ogg']);
 
 }
 
@@ -66,7 +66,7 @@ var text;
 var mute;
 random = Math.random();
 var musicIsPlaying = true;
-var goText;
+var textEnd;
 var trump;
 var box;
 
@@ -141,15 +141,15 @@ function create() {
 
 
     //Add game over text
-    goText = level2.add.text(level2.world.centerX, level2.world.centerY - 200, ' ', {
+    textEnd = level2.add.text(level2.world.centerX, level2.world.centerY - 200, ' ', {
         font: '40px Arial',
         fill: '#D80000',
         align: 'center'
     });
-    goText.anchor.setTo(0.5, 0.5);
-    goText.font = 'Arial';
-    goText.visible = false;
-    goText.fixedToCamera = true;
+    textEnd.anchor.setTo(0.5, 0.5);
+    textEnd.font = 'Arial';
+    textEnd.visible = false;
+    textEnd.fixedToCamera = true;
 
 
     //Add Emails
@@ -185,10 +185,10 @@ function create() {
 
 
     //Add sounds
-    fireSound = level2.add.audio('fireSound');
+    // fireSound = level2.add.audio('fireSound');
     emailKilled = level2.add.audio('emailKilled');
     copsSound = level2.add.audio('copsSound');
-    explo = level2.add.audio('explo');
+    // explo = level2.add.audio('explo');
     mainSong = level2.add.audio('mainSong');
 
 
@@ -222,6 +222,11 @@ function create() {
     // text.anchor.setTo(0.5, 0.5);
     level2.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 
+    overlay = level2.add.sprite(0, 0, 'overlay');
+    overlay.width = level2.width;
+    overlay.height = level2.height;
+    overlay.visible = false;
+
     //Add music 
     music = level2.add.audio('mainSong');
     music.play();
@@ -238,22 +243,28 @@ function updateCounter() {
     if (counter == 0) {
         if (score > scoreEnemy) {
 
-            goText = level2.add.text(level2.world.centerX, level2.world.centerY, 'Congratulation ', {
+            overlay.visible = true;
+            textEnd = level2.add.text(level2.world.centerX, level2.world.centerY, 'C O N G R A T U L A T I O N ', {
                 font: '40px Arial',
-                fill: '#002849',
+                fill: '#fff',
                 align: 'center'
             });
+            textEnd.fontWeight = 'bold';
+            textEnd.anchor.set(0.5);
             text.destroy();
-            // setTimeout(endOfTimer, 500);
-            endOfTimer();
-            // setTimeout(win, 2000);
+            setTimeout(endOfTimer, 500);
+            setTimeout(win, 2000);
             win();
         } else if (scoreEnemy > score) {
-            goText = level2.add.text(level2.world.centerX, level2.world.centerY, 'Game Over ', {
+
+            overlay.visible = true;
+            textEnd = level2.add.text(level2.world.centerX, level2.world.centerY, 'G A M E  O V E R', {
                 font: '40px Arial',
-                fill: '#ff0022',
+                fill: '#fff',
                 align: 'center'
             });
+            textEnd.fontWeight = 'bold';
+            textEnd.anchor.set(0.5);
             text.destroy();
             setTimeout(endOfTimer, 500);
             setTimeout(loose, 2000);
@@ -308,7 +319,7 @@ function createFbi() {
     fbiCar.body.collideWorldBounds = false;
     fbiCar.checkWorldBounds = true;
     fbiCar.events.onOutOfBounds.add(fbiOut, this);
-    setTimeout(createFbi, 15000);
+    setTimeout(createFbi, 20000);
 }
 
 //Generate fbi car when out of the ground

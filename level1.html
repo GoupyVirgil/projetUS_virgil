@@ -1,0 +1,35 @@
+<!doctype html> 
+<html lang="en"> 
+    <head> 
+        <title>Hill'arcade</title>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="dest/img/favicon.png" type="image/png">
+        <style type="text/css">
+            body {
+                margin: 0;
+                text-align: center;
+            }
+            body canvas {
+                margin: auto;
+            }
+        </style>
+    </head>
+    <body>
+    	<div id="overlay">
+            <img src="dest/img/LoadingDots.gif">
+            <img src="dest/img/LoadingHubert.gif">
+        </div>
+
+        <script src="dest/js/lib/phaser.min.js"></script>
+        <script type="text/javascript" src="dest/js/level1/level1.js"/></script>
+        <script type="text/javascript">
+
+            window.onload = function() { 
+
+                window.document.getElementById('overlay').style.display = 'none';
+            
+            }
+                
+        </script>
+    </body>
+</html>
