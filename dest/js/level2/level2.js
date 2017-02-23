@@ -61,7 +61,7 @@ var emailKilled;
 var mainSong;
 var timer;
 var total = 0;
-var counter = 70;
+var counter = 50;
 var text;
 var mute;
 random = Math.random();
@@ -214,7 +214,7 @@ function create() {
 
 
     //Timer
-    text = level2.add.text(level2.world.centerX - 80, 40, 'Timer : 70', {
+    text = level2.add.text(level2.world.centerX - 80, 40, 'Timer : 50', {
         fontSize: "25px",
         fill: "#9296e7",
         align: "center"
@@ -349,7 +349,7 @@ function update() {
     function collectMail(player, mail) {
         mail.kill();
         emailKilled.play();
-        score += 8;
+        score += 9;
         scorePlayer.text = 'Score: ' + score;
     }
 
@@ -357,7 +357,7 @@ function update() {
     function fbiCollect(fbiCar, mail) {
         mail.kill();
         copsSound.play();
-        scoreEnemy += 12;
+        scoreEnemy += 9;
         scoreFbi.text = 'Score FBI : ' + scoreEnemy;
     }
 

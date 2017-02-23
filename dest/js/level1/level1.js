@@ -24,8 +24,10 @@ function preload() {
     game.load.spritesheet('hubert', 'dest/img/level1/Hubert.png', 282, 513);
     game.load.spritesheet('mecBlinde', 'dest/img/level1/MecBlinde.png', 470, 456);
 
-    game.load.audio('mainSongLvl1', 'assets/sound/main_song_lvl1.mp3');
-    game.load.audio('yes', 'assets/sound/yes.mp3');
+    game.load.audio('mainSongLvl1', 'sounds/main_song_lvl1.mp3');
+    game.load.audio('yes', 'sounds/yes.mp3');
+    game.load.image('degat', 'dest/img/level1/dgt.png');
+    game.load.audio('crie', 'sounds/crie.mp3');
 
 }
 
@@ -61,7 +63,8 @@ function create() {
     // MUSIQUE
     mainSong = game.add.audio('mainSongLvl1');
     mainSong.play();
-
+    yes = game.add.audio('yes');
+    crie = game.add.audio('crie');
     mute = game.input.keyboard.addKey(Phaser.Keyboard.M);
 
     // Nuages
@@ -187,22 +190,25 @@ function create() {
     hobo.enableBody = true;
     hobo.hasTouch = false;
     
-    var hobo_item = hobo.create(450, 641, 'hubert');
+    var hobo_item = hobo.create(450, game.height - 280, 'hubert');
     hobo_item.scale.setTo(0.25);
     hobo_item.body.immovable = true;
     hobo_item.body.setSize(100, 1, 70, 280);
 
-    hobo_item = hobo.create(1780, 453, 'hubert');
+    hobo_item = hobo.create(1780, game.height - 473, 'hubert');
     hobo_item.scale.setTo(0.25);
     hobo_item.body.immovable = true;
+    hobo_item.body.setSize(100, 1, 70, 280);
 
-    hobo_item = hobo.create(2675, 443, 'hubert');
+    hobo_item = hobo.create(2675, game.height - 483, 'hubert');
     hobo_item.scale.setTo(0.25);
     hobo_item.body.immovable = true;
+    hobo_item.body.setSize(100, 1, 70, 280);
 
-    hobo_item = hobo.create(3500, 643, 'hubert');
+    hobo_item = hobo.create(3500, game.height - 283, 'hubert');
     hobo_item.scale.setTo(0.25);
     hobo_item.body.immovable = true;
+    hobo_item.body.setSize(100, 1, 70, 280);
 
     hobo.callAll('animations.add', 'animations', 'loop', [0,1], 1, true);
     hobo.callAll('play', null, 'loop');
@@ -213,27 +219,27 @@ function create() {
     blinde.enableBody = true;
     blinde.hasRacketer = false;
 
-    var blinde_item = blinde.create(600, 458, 'mecBlinde');
+    var blinde_item = blinde.create(600, game.height - 468, 'mecBlinde');
     blinde_item.scale.setTo(0.25);
     blinde_item.body.immovable = true;
 
-    blinde_item = blinde.create(20, 30, 'mecBlinde');
+    blinde_item = blinde.create(20, game.height - 891, 'mecBlinde');
     blinde_item.scale.setTo(0.25);
-    blinde_item.body.immovable = true;	
+    blinde_item.body.immovable = true;  
 
-    blinde_item = blinde.create(925, 658, 'mecBlinde');
-    blinde_item.scale.setTo(0.25);
-    blinde_item.body.immovable = true;
-
-    blinde_item = blinde.create(1300, 366, 'mecBlinde');
+    blinde_item = blinde.create(925, game.height - 268, 'mecBlinde');
     blinde_item.scale.setTo(0.25);
     blinde_item.body.immovable = true;
 
-    blinde_item = blinde.create(2375, 758, 'mecBlinde');
+    blinde_item = blinde.create(1300, game.height - 560, 'mecBlinde');
     blinde_item.scale.setTo(0.25);
     blinde_item.body.immovable = true;
 
-    blinde_item = blinde.create(2560, 188, 'mecBlinde');
+    blinde_item = blinde.create(2375, game.height - 168, 'mecBlinde');
+    blinde_item.scale.setTo(0.25);
+    blinde_item.body.immovable = true;
+
+    blinde_item = blinde.create(2560, game.height - 738, 'mecBlinde');
     blinde_item.scale.setTo(0.25);
     blinde_item.body.immovable = true;
 
@@ -286,7 +292,12 @@ function create() {
     // Counterz.anchor.setTo(0.5, 0.5);
     game.time.events.loop(Phaser.Timer.SECOND, updateCounter, this);
 
-    
+    degats = game.add.image(0, 0, 'degat');
+    degats.fixedToCamera = true;
+    degats.width = game.width;
+    degats.height = game.height;
+    degats.visible = false;
+    alphaSprite = 1;
     
 }
 
@@ -305,6 +316,16 @@ function update() {
     // Vitesse du personnage en fonction de la touche
     player.body.velocity.x = 0;
 	
+    if( degats.visible && alphaSprite > 0){
+
+
+        degats.alpha = alphaSprite;
+        alphaSprite -= 0.01;
+
+    }else{
+        alphaSprite = 1;
+    }
+
     if (cursors.isDown) {
 		console.log(cursors);
 	}
@@ -406,6 +427,9 @@ function hoboCollision (player, hobo_item) {
 		hobo_item.animations.play('static', 0.5, true);
 		hobo_item.frame = 2;
 		hobo_item.hasTouch = true;
+        degats.visible = true;
+        setTimeout(invisible, 800);
+        crie.play();
 	};
 }
 
@@ -423,6 +447,10 @@ function blindeCollision (player, blinde_item) {
 		blinde_item.hasRacketer = true;
         yes.play();
 	};
+}
+
+function invisible() {
+    degats.visible = false;
 }
 
 //Stop game at the end of counter

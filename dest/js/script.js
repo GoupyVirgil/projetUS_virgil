@@ -12,8 +12,7 @@ var redirect = function() {
 }
 
 $('#tryAgain').click(function() {
-	console.log('fvghjk')
-	var songItem =  new Audio('../../sounds/imBack.mp3');
+	var songItem =  new Audio('sounds/imBack.mp3');
 	songItem.play();
 	setTimeout(redirect, 1800);
 });
